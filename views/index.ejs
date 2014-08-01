@@ -1,22 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="daily">
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/main.css' />
-    
   </head>
-  <body><div class="container"><div class="col-sm-offset-2 col-sm-8">
+  <body ng-controller="TopCtrl"><div class="container"><div class="col-sm-offset-3 col-sm-6">
 
 	<h1><%= title %></h1>
     <p>Welcome to <%= title %>.</p>
     
-    <form method='post' action="<%= !passwordExists ? '/register' : '/signin' %>">
-   		<input class="form-control" name="pass" type="password" placeholder="password">
-   		<button class="btn btn-default pull-right" type="submit">
-   			<%= !passwordExists ? 'Register' : 'Sign in' %>
-   		</button>
-    </form>
+    <div class="signin clearfix <%= when(passwordExists, 'hide') %>">
+	    <form method='post' action="<%= !passwordExists ? '/register' : '/signin' %>">
+	    	<p>Please sign in<%= when(!passwordExists, ", for the first time") %>.</p>
+	   		<input class="form-control" name="pass" type="password" placeholder="password">
+	   		<button class="btn btn-default pull-right" type="submit">
+	   			<%= !passwordExists ? 'Register' : 'Sign in' %>
+	   		</button>
+	    </form>
+	</div>
 
-  </div></div></body>
+	<div class="entry clearfix <%= when(tasksExist, 'hide') %>">
+		<form method='post' action='/tasks'>
+			<p>Enter one task per line.</p>
+			<textarea class="form-control" name="tasks" rows="5"></textarea>
+			<button class="btn btn-default pull-right" type="submit">Save</button>
+		</form>
+	</div>
+
+  <div ng-controller="TasksCtrl">
+    <div ng-repeat="task in tasks" class="task" ng-click="toggle(task)"
+    ng-class="{ yep: isChecked(task) }">
+  		<div class="checkbox"><label>
+  			<input type="checkbox" value="" ng-model="task.status"
+        ng-true-value="yep" ng-false-value="nope">{{task.summary}}
+  		</label></div>
+    </div>
+  </div>
+
+  </div></div>
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js"></script>
+  <script>
+    var projectModule = angular.module('daily',[]);
+    
+    function TopCtrl($scope, $http) {
+      
+    };
+    TopCtrl.$inject = ['$scope', '$http', '$window'];
+
+
+    function TasksCtrl($scope, $http, $window) {
+
+      var init = function () {
+        $http.get('/tasks/all')
+        .success(function (data, status) {
+          $scope.tasks = data;
+        });        
+      }(); // call
+
+      var flipStatus = function (oldStatus) {
+        oldStatus = oldStatus || 'nope';
+
+        if (oldStatus === 'nope') {
+          newStatus = 'yep';
+        }
+        if (oldStatus === 'yep') {
+          newStatus = 'nope';
+        }
+        return newStatus;
+      };
+
+    	$scope.toggle = function (task) {
+    		task.status = flipStatus(task.status);
+    		
+        var data = {
+    			status: task.status
+    		};
+
+    		$http.put('/tasks/' + task.id, data)
+    		.success(function (data) {
+
+    		});
+    	};
+
+      $scope.isChecked = function (task) {
+        return task.status === 'yep';
+      };
+    }
+    TaskCtrl.$inject = ['$scope', '$http', '$window'];
+  </script>
+  </body>
 </html>

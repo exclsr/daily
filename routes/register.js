@@ -1,7 +1,6 @@
 // register.js
 
 var express  = require('express');
-var fs       = require('fs');
 var passfile = require('../lib/passfile.js')
 
 var router = express.Router();

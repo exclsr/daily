@@ -10,3 +10,13 @@ a {
 button {
 	margin-top: 5px;
 }
+
+.task {
+	cursor: pointer;
+	padding: 1ex;
+	margin-bottom: 3px;
+	background-color: #ddd;
+}
+.yep {
+	background-color: gold;
+}
