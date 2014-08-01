@@ -2,6 +2,7 @@
 <html ng-app="daily">
   <head>
     <title><%= title %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/css/main.css' />
   </head>
@@ -87,7 +88,7 @@
         return task.status === 'yep';
       };
     }
-    TaskCtrl.$inject = ['$scope', '$http', '$window'];
+    TasksCtrl.$inject = ['$scope', '$http', '$window'];
   </script>
   </body>
 </html>

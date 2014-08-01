@@ -23,6 +23,26 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var dayfile = require('./lib/dayfile.js');
+var taskfile = require('./lib/taskfile.js');
+app.use(function (req, res, next) {
+    dayfile.ensure(function (err) {
+        if (err) {
+            return res.send(500, "Dayfile cannot be created.");
+        }
+
+        if (dayfile.isToday()) {
+            return next();
+        }
+
+        taskfile.uncheckAll(function () {
+            dayfile.touch(function () {
+                next();
+            });
+        });
+    });
+});
+
 app.use('/', routes);
 app.use('/users', users);
 app.use('/register', register);
