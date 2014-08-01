@@ -9,7 +9,7 @@
   <body ng-controller="TopCtrl"><div class="container"><div class="col-sm-offset-3 col-sm-6">
 
 	<h1><%= title %></h1>
-    <p>Welcome to <%= title %>.</p>
+    <p>Welcome to <%= title %>. Today is {{today | date : 'fullDate'}}.</p>
     
     <div class="signin clearfix <%= when(passwordExists, 'hide') %>">
 	    <form method='post' action="<%= !passwordExists ? '/register' : '/signin' %>">
@@ -45,7 +45,7 @@
     var projectModule = angular.module('daily',[]);
     
     function TopCtrl($scope, $http) {
-      
+      $scope.today = new Date();
     };
     TopCtrl.$inject = ['$scope', '$http', '$window'];
 
